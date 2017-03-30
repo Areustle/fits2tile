@@ -8,7 +8,7 @@ fits2tile is *very* user unfriendly.
 Requirements: 
 -------------
 
-* [cfitsio](https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html)
+* [cfitsio](https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html) - Available in most package managers, and from [here](https://github.com/HEASARC/cfitsio)
 * [TileDB](http://istc-bigdata.org/tiledb/index.html)
 
 Usage + Installation:
