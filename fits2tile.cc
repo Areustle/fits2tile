@@ -43,18 +43,19 @@ Fits2tile::Fits2tile (
   schema_attributes_size{attrib.size()},
   schema_dimensions_size{dims.size()}
 {
-  schema_attributes = new (char*)[schema_attributes_size];
-  schema_dimensions = new (char*)[schema_dimensions_size];
-  schema_types = new int[schema_attributes_size+1];
-
   fits_get_num_rows(infile,
       &nrows,
       &status
       );
   if (status) {
-    fits_report_error(stdout, status);
-    return 2; /* TODO fix return of constructor failure */
+    std::iostream errstream;
+    fits_report_error(errstream, status);
+    throw std::runtime_error(errstream.str());
   }
+
+  schema_attributes = new (char*)[schema_attributes_size];
+  schema_dimensions = new (char*)[schema_dimensions_size];
+  schema_types = new int[schema_attributes_size+1];
 
   int colnum;
   int typecode;
