@@ -109,6 +109,12 @@ Fits2tile::Fits2tile (
 
 }   /* -----  end of method Fits2tile::Fits2tile  ----- */
 
+Fits2tile::~Fits2tile(){
+  delete schema_attributes;
+  delete schema_dimensions;
+  delete schema_types;
+}
+
 TileDB_ArraySchema
 Fits2tile::fill_schema ( TileDB_ArraySchema user_schema )
 {
