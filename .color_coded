@@ -1,0 +1,5 @@
+-x
+c++
+-I.
+-I/home/areustle/usr/include
+-I/usr/include

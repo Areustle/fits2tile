@@ -1,5 +1,5 @@
 /*
- * =====================================================================================
+ * ============================================================================
  *
  *       Filename:  fits2tile.cc
  *
@@ -13,106 +13,71 @@
  *         Author:  YOUR NAME (),
  *   Organization:
  *
- * =====================================================================================
+ * ============================================================================
  */
 #include "fits2tile.h"
 #include <stdlib.h>
+#include <string>
+#include <vector>
+#include <stdexcept>
 
 
 /*
- *--------------------------------------------------------------------------------------
+ *-----------------------------------------------------------------------------
  *       Class:  Fits2tile
  *      Method:  Fits2tile
  * Description:  constructor
- *--------------------------------------------------------------------------------------
+ *-----------------------------------------------------------------------------
  */
-Fits2tile::Fits2tile ()
-{
-}  /* -----  end of method Fits2tile::Fits2tile  (constructor)  ----- */
-
 Fits2tile::Fits2tile (
-    fitsfile& infile,
-    std::string name,
-    std::vector<const std::string> dims,
-    std::vector<const std::string> attribs
-    ) :
-  infile{infile},
-  array_name{name},
-  dimensions{dims},
-  attributes{attribs},
-  schema_attributes_size{attrib.size()},
-  schema_dimensions_size{dims.size()}
+    fitsfile* input_file,
+    std::vector<std::string> input_dimensions,
+    std::vector<std::string> input_attributes
+    ):infile(input_file),
+  dimensions(input_dimensions),
+  attributes(input_attributes)
 {
-  fits_get_num_rows(infile,
-      &nrows,
-      &status
-      );
+  fits_get_num_rows(infile, &nrows, &status);
   if (status) {
-    std::iostream errstream;
-    fits_report_error(errstream, status);
-    throw std::runtime_error(errstream.str());
+    fits_report_error(stderr, status);
+    throw std::runtime_error("Error Opening FITS File");
   }
 
-  schema_attributes = new (char*)[schema_attributes_size];
-  schema_dimensions = new (char*)[schema_dimensions_size];
-  schema_types = new int[schema_attributes_size+1];
+  for( auto attribute : attributes )
+    attribute_types.push_back(f2ttype(attribute));
 
-  int colnum;
-  int typecode;
-  long repeat;
-  long width;
-  for(int i=0; i<schema_attributes_size; ++i){
-    schema_attributes[i] = c_str(attributes[i]);
-    fits_get_colnum(infile,
-        0,
-        schema_attributes[i],
-        &colnum,
-        &status
-        );
-    fits_get_col_type(infile,
-        &colnum,
-        &typecode,
-        &width,
-        &status
-        );
-    schema_types[i] = f2ttype(typecode);
-  }
-
-  std::vector<int> dimension_types;
-  for(int i=0; i<schema_dimensions_size; ++i){
-    schema_dimensions[i] = c_str(dimensions[i]);
-    fits_get_colnum(infile,
-        0,
-        schema_dimensions[i],
-        &colnum,
-        &status
-        );
-    fits_get_col_type(infile,
-        &colnum,
-        &typecode,
-        &width,
-        &status
-        );
-    dimension_types.push_back(f2ttype(typecode));
-  }
-
-  //For now, all dimensions must be the same type.
-  //Will improve once I figure out how to handle the
-  //domain type for disparate dimensions.
-  bool flag = false;
-  if(dimension_types.size() > 1){
-    for(int i=1; i<dimension_types.size(); ++i){
-      if(dimension_types[i] != dimension_types[i-1]) flag = true;
-    }
-  }
-  if(flag) schema_types[schema_attribute_size] = dimension_types[0];
-
+  for( auto dimension : dimensions )
+    dimension_types.push_back(f2ttype(dimension));
 }   /* -----  end of method Fits2tile::Fits2tile  ----- */
 
-Fits2tile::~Fits2tile(){
-  delete schema_attributes;
-  delete schema_dimensions;
-  delete schema_types;
+int
+Fits2tile::f2ttype( std::string column_name )
+{
+  int colnum, typecode;
+  long repeat, width;
+
+  fits_get_colnum(infile,
+      0,
+      const_cast<char*>(column_name.c_str()),
+      &colnum,
+      &status);
+
+  if (status) {
+    fits_report_error(stderr, status);
+    throw
+      std::runtime_error("Error locating column "
+                          +column_name
+                          +" in FITS file");
+  }
+
+  fits_get_coltype(infile,
+      colnum,
+      &typecode,
+      &repeat,
+      &width,
+      &status);
+
+  return typecode;
 }
 
 TileDB_ArraySchema
@@ -124,6 +89,6 @@ Fits2tile::fill_schema ( TileDB_ArraySchema user_schema )
   user_schema.dim_num_ = schema_dimensions_size;
   user_schema.domain_ = schema_domain;
   user_schema.types_ = schema_types;
-  return ;
+  return user_schema;
 }   /* -----  end of method Fits2tile::fill_schema  ----- */
 

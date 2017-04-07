@@ -31,31 +31,14 @@ class Fits2tile
 {
   public:
     /* ====================  LIFECYCLE     ======================================= */
-    Fits2tile ( fitsfile& infile,               /* constructor */
-                std::string array_name,
-                std::vector<std::string> dimensions,
-                std::vector<std::string> attributes
+    Fits2tile ( fitsfile* input_file,               /* constructor */
+                std::vector<std::string> input_dimensions,
+                std::vector<std::string> input_attributes
               );
 
-    /* Fits2tile ( fitsfile& infile,               /1* constructor *1/ */
-    /*            std::string array_name, */
-    /*            std::vector<unsigned int> dimensions, */
-    /*            std::vector<unsigned int> attributes */
-    /*          ); */
-
-    Fits2tile ( fitsfile& infile ,              /* constructor */
-                TileDB_ArraySchema array_schema
-              );
-
-    /* Fits2tile ( std::vector<fitsfile&> infiles,               /1* constructor *1/ */
-    /*            std::string array_name, */
-    /*            std::vector<std::string> dimensions, */
-    /*            std::vector<std::string> attributes */
-    /*          ); */
-
-    /* Fits2tile ( std::vector<fitsfile&> infiles ,              /1* constructor *1/ */
-    /*            TileDB_ArraySchema array_schema */
-    /*          ); */
+    /* Fits2tile ( fitsfile& infile ,              /1* constructor *1/ */
+    /*             TileDB_ArraySchema array_schema */
+    /*           ); */
 
     /* ====================  ACCESSORS     ======================================= */
     long get_row_count();
@@ -74,21 +57,17 @@ class Fits2tile
 
   private:
     /* ====================  Utilities     ======================================= */
-    int f2ttype(int fits_typecode);
+    int f2ttype( std::string column_name );
 
     /* ====================  DATA MEMBERS  ======================================= */
-    int status = 0;
+    int status;
     long nrows;
-    const fitsfile& infile;
+    fitsfile* infile;
     std::string array_name;
-    std::vector<const std::string> dimensions;
-    std::vector<const std::string> attributes;
-    char* schema_attributes[];
-    const size_t schema_attributes_size;
-    char* schema_dimensions[];
-    const size_t schema_dimensions_size;
-    template<typename T> T schema_domain[];
-    int schema_types[];
+    std::vector<std::string> dimensions;
+    std::vector<std::string> attributes;
+    std::vector<int> dimension_types;
+    std::vector<int> attribute_types;
 
 }; /* -----  end of class Fits2tile  ----- */
 
