@@ -38,6 +38,10 @@ flags = [
     'c++',
     '-std=c++11',
     '-I.',
+    # '-I/usr/local/include',
+    # '-I/opt/local/libexec/llvm-3.9/include/c++/v1'
+    '-I/opt/local/include',
+    '-I/Users/areustle/asr/include',
     '-I/home/areustle/usr/include',
     '-I/usr/include',
 ]

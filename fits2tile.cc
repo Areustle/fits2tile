@@ -56,7 +56,8 @@ Fits2tile::f2ttype( std::string column_name )
   int colnum, typecode;
   long repeat, width;
 
-  fits_get_colnum(infile,
+  fits_get_colnum(
+      infile,
       0,
       const_cast<char*>(column_name.c_str()),
       &colnum,
@@ -70,7 +71,8 @@ Fits2tile::f2ttype( std::string column_name )
                           +" in FITS file");
   }
 
-  fits_get_coltype(infile,
+  fits_get_coltype(
+      infile,
       colnum,
       &typecode,
       &repeat,
