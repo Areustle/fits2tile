@@ -1,6 +1,5 @@
-CPPFLAGS=-g -I. -I/home/areustle/usr/include -I/usr/include -L/home/areustle/usr/lib
+CPPFLAGS=-g -I. -I${HOME}/asr/include -I/usr/include -L${HOME}/asr/lib -lcfitsio -ltiledb
 all:
-	g++ ${CPPFLAGS} -lcfitsio -ltiledb -o test test.cc
-	g++ ${CPPFLAGS} -lcfitsio -ltiledb -o fits2tile fits2tile.cc
+	g++ ${CPPFLAGS} -o test test.cc fits2tile.cc
 
 .PHONY: all

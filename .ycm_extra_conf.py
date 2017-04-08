@@ -43,6 +43,7 @@ flags = [
     '-I/opt/local/include',
     '-I/Users/areustle/asr/include',
     '-I/home/areustle/usr/include',
+    '-I/home/areustle/usr/usr/include',
     '-I/usr/include',
 ]
 
