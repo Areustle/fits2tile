@@ -3,8 +3,8 @@
  *
  *       Filename:  fits2tile.h
  *
- *    Description:  Interface for fits2tile library. Convert a FITS format data file
- *                  into a TileDB array.
+ *    Description:  Interface for fits2tile library. Convert a FITS format
+ *                  data file into a TileDB array.
  *
  *        Version:  1.0
  *        Created:  04/05/2017 21:04:00
@@ -67,7 +67,7 @@ class Fits2tile
     type_tuple get_type_tuple(int);
     int column_index(std::string);
     void check_fits_status( std::string );
-    buffer_pair allocate_column_buffer( type_tuple );
+    buffer_pair allocate_column_buffer( size_t );
     void read_column(int, type_tuple, buffer_pair);
 
     /* ==============  DATA MEMBERS  ======================================= */

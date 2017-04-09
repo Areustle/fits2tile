@@ -178,15 +178,13 @@ Fits2tile::check_fits_status( std::string errmsg ){
     status = 0;
     throw std::runtime_error(errmsg);
   }
-
 }
 
+//@TODO add safety checks for malloc success.
 Fits2tile::buffer_pair
-Fits2tile::allocate_column_buffer(type_tuple tt){
-  void* column_buffer = malloc(nrows*std::get<2>(tt));
-  buffer_pair bufp =  std::make_pair(column_buffer, nrows*std::get<2>(tt));
-
-  return bufp;
+Fits2tile::allocate_column_buffer(size_t width){
+  void* column_buffer = malloc(nrows*width);
+  return std::make_pair(column_buffer, nrows*width);
 }
 
 void
