@@ -1,5 +1,8 @@
 -x
 c++
+-std=c++11
 -I.
+-I/usr/local/include
+-I/Users/areustle/asr/include
 -I/home/areustle/usr/include
 -I/usr/include

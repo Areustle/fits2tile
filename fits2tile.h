@@ -67,7 +67,7 @@ class Fits2tile
     type_tuple get_type_tuple(int);
     int column_index(std::string);
     void check_fits_status( std::string );
-    buffer_pair allocate_column_buffer( size_t );
+    buffer_pair allocate_column_buffer( type_tuple );
     void read_column(int, type_tuple, buffer_pair);
 
     /* ==============  DATA MEMBERS  ======================================= */
@@ -79,6 +79,7 @@ class Fits2tile
     std::vector<std::string> attributes;
     std::vector<type_tuple> dimension_types;
     std::vector<type_tuple> attribute_types;
+    std::vector<buffer_pair> bufp_vec;
     const char** c_attributes;
     const char** c_dimensions;
     double* c_domain;

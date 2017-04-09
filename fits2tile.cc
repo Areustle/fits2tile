@@ -182,7 +182,8 @@ Fits2tile::check_fits_status( std::string errmsg ){
 
 //@TODO add safety checks for malloc success.
 Fits2tile::buffer_pair
-Fits2tile::allocate_column_buffer(size_t width){
+Fits2tile::allocate_column_buffer(type_tuple tt){
+  size_t width = std::get<2>(tt);
   void* column_buffer = malloc(nrows*width);
   return std::make_pair(column_buffer, nrows*width);
 }
@@ -200,4 +201,30 @@ Fits2tile::read_column(int colnum, type_tuple tt, buffer_pair bufp){
       NULL,
       &status);
   check_fits_status("Error Reading Column"+std::to_string(colnum));
+}
+
+void
+Fits2tile::write_array( TileDB_Array& tiledb_array ){
+  std::vector<buffer_pair> attrib_bufs;
+  for(int i=0; i<attributes.size(); ++i){
+    attrib_bufs.push_back(allocate_column_buffer(attribute_types[i]));
+  }
+  std::vector<buffer_pair> dimen_bufs;
+  for(int i=0; i<dimensions.size(); ++i){
+    dimen_bufs.push_back(allocate_column_buffer(dimension_types[i]));
+  }
+  for(int i=0; i<nrows; ++i){
+    for(int j=0; j<dimensions.size(); ++j){
+      buffer_coords[(i*dimensions.size())+j] =
+    }
+  }
+  const void* buffers[] = { nonce, buffer_coords };
+  size_t buffer_sizes[] = { nrows*sizeof(char), 3*nrows*sizeof(double) };
+  std::cout << "Write Array Buffer " << std::endl;
+  try{
+    tiledb_array_write(tiledb_array, buffers, buffer_sizes);
+  } catch (std::exception e){
+    std::cout << e.what() << std::endl;
+    return 1;
+  }
 }

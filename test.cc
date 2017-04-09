@@ -81,18 +81,15 @@ int main(){
   std::vector<std::string> dims = {"TIME", "RA", "DEC"};
   std::vector<std::string> attr = {"ENERGY"};
   Fits2tile ff(fptr, dims, attr);
-  ff.fill_schema(array_schema);
+  array_schema = ff.fill_schema(array_schema);
 
   // Create array
   tiledb_array_create(tiledb_ctx, &array_schema);
+  tiledb_array_free_schema(&array_schema);
 
   // === Read Fits Columns ===
-  //GET NUMBER OF ROWS
+  // GET NUMBER OF ROWS
   long nelems = ff.get_row_count();
-
-
-  // Free array schema
-  tiledb_array_free_schema(&array_schema);
 
   TileDB_Array* tiledb_array;
   tiledb_array_init(
