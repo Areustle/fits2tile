@@ -33,7 +33,7 @@ class Fits2tile
 {
   public:
     /*===============  TYPEDEFS      ======================================= */
-    typedef std::tuple<int,int,size_t> type_tuple;
+    typedef std::tuple<int,int,int,size_t> meta_tuple;
     typedef std::pair<void*,size_t> buffer_pair;
 
     /* ==============  LIFECYCLE     ======================================= */
@@ -63,23 +63,25 @@ class Fits2tile
 
   private:
     /* ==============  Utilities     ======================================= */
-    std::pair<int,size_t> ftype(int);
-    type_tuple get_type_tuple(int);
+    /* std::pair<int,size_t> ftype(int); */
+    meta_tuple get_meta_tuple(int);
     int column_index(std::string);
     void check_fits_status( std::string );
-    buffer_pair allocate_column_buffer( type_tuple );
-    void read_column(int, type_tuple, buffer_pair);
+    void read_dim_column(meta_tuple, double*);
+    void read_attr_column(meta_tuple, void*);
+    buffer_pair alloc_col_buf( meta_tuple );
 
     /* ==============  DATA MEMBERS  ======================================= */
     int status;
     long nrows;
     fitsfile* infile;
     std::string array_name;
-    std::vector<std::string> dimensions;
-    std::vector<std::string> attributes;
-    std::vector<type_tuple> dimension_types;
-    std::vector<type_tuple> attribute_types;
-    std::vector<buffer_pair> bufp_vec;
+    std::vector<meta_tuple> dimension_types;
+    std::vector<meta_tuple> attribute_types;
+    /* std::vector<buffer_pair> dbuf; */
+    /* std::vector<buffer_pair> abuf; */
+    const void** buffers;
+    size_t* buffer_sizes;
     const char** c_attributes;
     const char** c_dimensions;
     double* c_domain;

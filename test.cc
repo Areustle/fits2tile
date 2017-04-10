@@ -81,7 +81,7 @@ int main(){
   std::vector<std::string> dims = {"TIME", "RA", "DEC"};
   std::vector<std::string> attr = {"ENERGY"};
   Fits2tile ff(fptr, dims, attr);
-  array_schema = ff.fill_schema(array_schema);
+  /* array_schema = ff.fill_schema(array_schema); */
 
   // Create array
   tiledb_array_create(tiledb_ctx, &array_schema);
@@ -101,14 +101,14 @@ int main(){
       NULL,                                      // All attributes
       0);                                        // Number of attributes
 
-    double doublenull, *met, *buffer_coords;
-    float floatnull, *ra, *decl;
+    double doublenull, *met, *buffer_coords, *decl;
+    float floatnull, *ra;
     char *nonce;
 
     nonce= (char *) malloc(nelems * sizeof(char));
     met  = (double *) malloc(nelems * sizeof(double));
     ra   = (float *) malloc(nelems * sizeof(float));
-    decl = (float *) malloc(nelems * sizeof(float));
+    decl = (double *) malloc(nelems * sizeof(double));
     buffer_coords = (double *) malloc(3 * nelems * sizeof(double));
 
     //@TODO Read last bufmod elements.
@@ -117,12 +117,12 @@ int main(){
     std::cout << i <<" "<< nelems << std::endl;
     std::cout << "RA " << std::endl;
     fits_read_col(fptr, TFLOAT, 2,              //RA
-            1+(i*nelems), 1, nelems, &doublenull,
+            1, 1, nelems, &doublenull,
             ra, &anynull, &status);
 
     std::cout << "DEC " << std::endl;
-    fits_read_col(fptr, TFLOAT, 3,              //DEC
-            1+(i*nelems), 1, nelems, &doublenull,
+    fits_read_col_dbl(fptr, 3,              //DEC
+            1, 1, nelems, doublenull,
             decl, &anynull, &status);
 
     std::cout << "MET " << std::endl;
