@@ -20,16 +20,19 @@ int main() {
       0);                                               // Number of attributes
 
   // Prepare cell buffers
-  char* buffer_a1 = new char[1964803];
-  double* buffer_coords = new double[3*1964803];
+  std::cout << "Prepare buffers" << std::endl;
+  char* buffer_a1 = new char[32];
+  double* buffer_coords = new double[3*32];
   void* buffers[] = { buffer_a1, buffer_coords };
   size_t buffer_sizes[] = { sizeof(buffer_a1), sizeof(buffer_coords) };
 
+  std::cout << "Read From Array" << std::endl;
   // Read from array
   tiledb_array_read(tiledb_array, buffers, buffer_sizes);
 
+  std::cout << "Output From Array" << std::endl;
   // Print cell values
-  int64_t result_num = 1964803;
+  int64_t result_num = 32;
   printf("coords\t a1\n");
   printf("--------------------------------------------------\n");
   for(int i=0; i<result_num; ++i) {

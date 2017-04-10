@@ -1,3 +1,5 @@
+#ifndef FITS2TILE_H
+#define FITS2TILE_H
 /*
  * ============================================================================
  *
@@ -18,10 +20,10 @@
  */
 #include <string>
 #include <vector>
+#include <tuple>
 #include <stdlib.h>
 #include "fitsio.h"
 #include "tiledb.h"
-#include <tuple>
 
 /*
  * ============================================================================
@@ -88,3 +90,4 @@ class Fits2tile
     int* c_types;
 }; /* -----  end of class Fits2tile  ----- */
 
+#endif /* FITS2TILE_H */

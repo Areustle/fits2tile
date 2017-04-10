@@ -34,7 +34,7 @@ int main(){
     // Prepare parameters for array schema
     const char* array_name = "my_workspace/sparse_arrays/my_array_B";
     const char* attributes[] = { "energy" };
-    const char* dimensions[] = { "ra", "dec", "met" };
+    const char* dimensions[] = {"met", "ra", "dec"};
     double domain[] = { 0.0, 360.0, -90.0, 90.0,
         0.0, std::numeric_limits<double>::max() };
     const int cell_val_num[] = {1};
@@ -53,7 +53,7 @@ int main(){
       array_name,       // Array name
       attributes,       // Attributes
       1,                // Number of attributes
-      2,                // Capacity
+      32,                // Capacity
       TILEDB_ROW_MAJOR, // Cell order
       cell_val_num,     // Number of cell values per attribute
       compression,      // Compression
@@ -85,11 +85,11 @@ int main(){
 
   // Create array
   tiledb_array_create(tiledb_ctx, &array_schema);
-  tiledb_array_free_schema(&array_schema);
 
   // === Read Fits Columns ===
   // GET NUMBER OF ROWS
   long nelems = ff.get_row_count();
+  /* long nelems = 32; */
 
   TileDB_Array* tiledb_array;
   tiledb_array_init(
@@ -101,33 +101,31 @@ int main(){
       NULL,                                      // All attributes
       0);                                        // Number of attributes
 
-    double doublenull, *met, *buffer_coords, *decl;
-    float floatnull, *ra;
+    double doublenull, *met, *buffer_coords, *decl, *ra;
+    float floatnull;
     char *nonce;
 
     nonce= (char *) malloc(nelems * sizeof(char));
     met  = (double *) malloc(nelems * sizeof(double));
-    ra   = (float *) malloc(nelems * sizeof(float));
+    ra   = (double *) malloc(nelems * sizeof(float));
     decl = (double *) malloc(nelems * sizeof(double));
     buffer_coords = (double *) malloc(3 * nelems * sizeof(double));
 
     //@TODO Read last bufmod elements.
-    /* for(int i=0; i<=bufruns; ++i){ */
-    int i=0;
-    std::cout << i <<" "<< nelems << std::endl;
+    std::cout << nelems << std::endl;
     std::cout << "RA " << std::endl;
-    fits_read_col(fptr, TFLOAT, 2,              //RA
-            1, 1, nelems, &doublenull,
+    fits_read_col_dbl(fptr, 2,              //RA
+            1, 1, nelems, 0.0,
             ra, &anynull, &status);
 
     std::cout << "DEC " << std::endl;
     fits_read_col_dbl(fptr, 3,              //DEC
-            1, 1, nelems, doublenull,
+            1, 1, nelems, 0.0,
             decl, &anynull, &status);
 
     std::cout << "MET " << std::endl;
     fits_read_col(fptr, TDOUBLE, 10,             //MET
-            1+(i*nelems), 1, nelems, &doublenull,
+            1, 1, nelems, &doublenull,
             met, &anynull, &status);
 
     std::cout << "Buffer Merge" << std::endl;
@@ -137,6 +135,17 @@ int main(){
         buffer_coords[(j*3)+1] = static_cast<double>(decl[j]);
         buffer_coords[(j*3)+2] = met[j];
     }
+
+    /* for(int i=0; i<32; ++i){ */
+    /*   std::cout << ra[i] << "\t"; */
+    /*   std::cout << decl[i] << "\t"; */
+    /*   std::cout << met[i] << " \t\t"; */
+    /*   for( int j=0; j<3; ++j){ */
+    /*     std::cout << buffer_coords[3*i+j] << " "; */
+    /*   } */
+    /*   std::cout << std::endl; */
+    /* } */
+
 
     const void* buffers[] = { nonce, buffer_coords };
     size_t buffer_sizes[] = { nelems*sizeof(char), 3*nelems*sizeof(double) };
@@ -149,6 +158,7 @@ int main(){
     }
 
 
+  tiledb_array_free_schema(&array_schema);
     /* } */
     tiledb_array_finalize(tiledb_array);
     free(nonce);
@@ -162,10 +172,6 @@ int main(){
 
   /* Finalize context. */
   tiledb_ctx_finalize(tiledb_ctx);
-
-    /* free( ra ); */
-    /* free( decl ); */
-
 
     return 0;
 }
