@@ -21,8 +21,8 @@ int main() {
 
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
-  char* buffer_a1 = new char[32];
-  double* buffer_coords = new double[3*32];
+  char* buffer_a1 = new char[150561];
+  float* buffer_coords = new float[2*150561];
   void* buffers[] = { buffer_a1, buffer_coords };
   size_t buffer_sizes[] = { sizeof(buffer_a1), sizeof(buffer_coords) };
 
@@ -32,12 +32,16 @@ int main() {
 
   std::cout << "Output From Array" << std::endl;
   // Print cell values
-  int64_t result_num = 32;
+  int64_t result_num = 150561;
   printf("coords\t a1\n");
   printf("--------------------------------------------------\n");
   for(int i=0; i<result_num; ++i) {
-    printf("(%f, %f, %f)", buffer_coords[3*i], buffer_coords[3*i+1], buffer_coords[3*i+2]);
-    printf("\t %c\n", buffer_a1[i]);
+    std::cout <<  buffer_coords[2*i]
+     << ", " << buffer_coords[2*i+1]
+     /* << ", " << buffer_coords[2*i+2] */
+     << "\t\t" << buffer_a1[i] << std::endl;
+    /* printf("(%f, %f, %f)", buffer_coords[3*i], buffer_coords[3*i+1], buffer_coords[3*i+2]); */
+    /* printf("\t %c\n", buffer_a1[i]); */
   }
 
   delete[] buffer_a1;

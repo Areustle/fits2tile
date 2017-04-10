@@ -26,26 +26,38 @@
 
 int main(){
 
-    // === Write TileDB Array ===
-    // Initialize context with the default configuration parameters
-    TileDB_CTX* tiledb_ctx;
-    tiledb_ctx_init(&tiledb_ctx, NULL);
+  // === Write TileDB Array ===
+  // Initialize context with the default configuration parameters
+  TileDB_CTX* tiledb_ctx;
+  tiledb_ctx_init(&tiledb_ctx, NULL);
 
-    // Prepare parameters for array schema
-    const char* array_name = "my_workspace/sparse_arrays/my_array_B";
-    const char* attributes[] = { "energy" };
-    const char* dimensions[] = {"met", "ra", "dec"};
-    double domain[] = { 0.0, 360.0, -90.0, 90.0,
-        0.0, std::numeric_limits<double>::max() };
-    const int cell_val_num[] = {1};
-    const int compression[] = { TILEDB_NO_COMPRESSION, TILEDB_NO_COMPRESSION };
-    double tile_extents[] =
-    {
-        5400.0,   //90 Minutes in seconds
-        8.0,      //8 degrees of arc
-        4.0       //8 degrees of arc
-    };
-    const int types[] = { TILEDB_CHAR, TILEDB_FLOAT64 };
+  // Prepare parameters for array schema
+  const char* array_name = "my_workspace/sparse_arrays/my_array_B";
+  const char* attributes[] = { "energy" };
+  const char* dimensions[] = {"ra", "dec"};
+  float domain[] = {
+    /* 0.0, std::numeric_limits<double>::max(), */
+    0.0, 360.0,
+    -90.0, 90.0
+  };
+  const int cell_val_num[] = {1};
+  const int compression[] =
+  {
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION
+  };
+  float tile_extents[] =
+  {
+      /* 5400.0,   //90 Minutes in seconds */
+      8.0,      //8 degrees of arc
+      4.0       //4 degrees of arc
+  };
+  const int types[] =
+  {
+    TILEDB_CHAR,
+    TILEDB_FLOAT32
+  };
+
   // Set array schema
   TileDB_ArraySchema array_schema;
   tiledb_array_set_schema(
@@ -59,28 +71,28 @@ int main(){
       compression,      // Compression
       0,                // Sparse array
       dimensions,       // Dimensions
-      3,                // Number of dimensions
+      2,                // Number of dimensions
       domain,           // Domain
-      6*sizeof(double), // Domain array length in bytes
+      4*sizeof(float), // Domain array length in bytes
       tile_extents,     // Tile extents
-      3*sizeof(double), // Tile extents length in bytes
+      2*sizeof(float), // Tile extents length in bytes
       TILEDB_ROW_MAJOR, // Tile order
       types             // Types
   );
 
   fitsfile *fptr;
   int status = 0, anynull = 0;
-  char filename[] = "lat_photon_weekly_w460_p302_v001.fits";
+  char filename[] = "L170410105950F748C67F80_PH00.fits";
   //OPEN TABLE
   fits_open_table( &fptr, filename, READONLY, &status);
   if (status) {
       fits_report_error(stdout, status);
-      return 1;
+      return 7;
   }
 
-  std::vector<std::string> dims = {"TIME", "RA", "DEC"};
-  std::vector<std::string> attr = {"ENERGY"};
-  Fits2tile ff(fptr, dims, attr);
+  /* std::vector<std::string> dims = {"TIME", "RA", "DEC"}; */
+  /* std::vector<std::string> attr = {"ENERGY"}; */
+  /* Fits2tile ff(fptr, dims, attr); */
   /* array_schema = ff.fill_schema(array_schema); */
 
   // Create array
@@ -88,8 +100,8 @@ int main(){
 
   // === Read Fits Columns ===
   // GET NUMBER OF ROWS
-  long nelems = ff.get_row_count();
-  /* long nelems = 32; */
+  /* long nelems = ff.get_row_count(); */
+  long nelems = 150561;
 
   TileDB_Array* tiledb_array;
   tiledb_array_init(
@@ -101,74 +113,73 @@ int main(){
       NULL,                                      // All attributes
       0);                                        // Number of attributes
 
-    double doublenull, *met, *buffer_coords, *decl, *ra;
-    float floatnull;
-    char *nonce;
+  float doublenull, *met, *buffer_coords, *decl, *ra;
+  float floatnull;
+  char *nonce;
 
-    nonce= (char *) malloc(nelems * sizeof(char));
-    met  = (double *) malloc(nelems * sizeof(double));
-    ra   = (double *) malloc(nelems * sizeof(float));
-    decl = (double *) malloc(nelems * sizeof(double));
-    buffer_coords = (double *) malloc(3 * nelems * sizeof(double));
+  nonce= (char *) malloc(nelems * sizeof(char));
+  /* met  = (double *) malloc(nelems * sizeof(double)); */
+  ra   = (float *) malloc(nelems * sizeof(float));
+  decl = (float *) malloc(nelems * sizeof(float));
+  buffer_coords = (float *) malloc(2 * nelems * sizeof(float));
 
-    //@TODO Read last bufmod elements.
-    std::cout << nelems << std::endl;
-    std::cout << "RA " << std::endl;
-    fits_read_col_dbl(fptr, 2,              //RA
-            1, 1, nelems, 0.0,
-            ra, &anynull, &status);
+  //@TODO Read last bufmod elements.
+  std::cout << nelems << std::endl;
+  std::cout << "RA " << std::endl;
+  fits_read_col_flt(fptr, 2,              //RA
+          1, 1, nelems, 7.0,
+          ra, &anynull, &status);
 
-    std::cout << "DEC " << std::endl;
-    fits_read_col_dbl(fptr, 3,              //DEC
-            1, 1, nelems, 0.0,
-            decl, &anynull, &status);
+  std::cout << "DEC " << std::endl;
+  fits_read_col_flt(fptr, 3,              //DEC
+          1, 1, nelems, 7.0,
+          decl, &anynull, &status);
 
-    std::cout << "MET " << std::endl;
-    fits_read_col(fptr, TDOUBLE, 10,             //MET
-            1, 1, nelems, &doublenull,
-            met, &anynull, &status);
+  /* std::cout << "MET " << std::endl; */
+  /* fits_read_col(fptr, TDOUBLE, 10,             //MET */
+  /*         1, 1, nelems, &doublenull, */
+  /*         met, &anynull, &status); */
 
-    std::cout << "Buffer Merge" << std::endl;
-    for(int j=0; j<nelems; ++j){
-        nonce[j] = 'a';
-        buffer_coords[(j*3)] = static_cast<double>(ra[j]);
-        buffer_coords[(j*3)+1] = static_cast<double>(decl[j]);
-        buffer_coords[(j*3)+2] = met[j];
+  std::cout << "Buffer Merge" << std::endl;
+  for(int j=0; j<nelems; ++j){
+      nonce[j] = 'a';
+      /* buffer_coords[(j*3)] = met[j]; */
+      buffer_coords[(j*2)+0] = ra[j];
+      buffer_coords[(j*2)+1] = decl[j];
+  }
+
+  for(int i=0; i<32; ++i){
+    /* std::cout << ra[i] << "\t"; */
+    /* std::cout << decl[i] << "\t"; */
+    /* std::cout << met[i] << " \t\t"; */
+    std::cout << nonce[i] << " ";
+    for( int j=0; j<2; ++j){
+      std::cout << buffer_coords[2*i+j] << " ";
     }
+    std::cout << std::endl;
+  }
 
-    /* for(int i=0; i<32; ++i){ */
-    /*   std::cout << ra[i] << "\t"; */
-    /*   std::cout << decl[i] << "\t"; */
-    /*   std::cout << met[i] << " \t\t"; */
-    /*   for( int j=0; j<3; ++j){ */
-    /*     std::cout << buffer_coords[3*i+j] << " "; */
-    /*   } */
-    /*   std::cout << std::endl; */
-    /* } */
-
-
-    const void* buffers[] = { nonce, buffer_coords };
-    size_t buffer_sizes[] = { nelems*sizeof(char), 3*nelems*sizeof(double) };
-    std::cout << "Write Array Buffer " << std::endl;
-    try{
-      tiledb_array_write(tiledb_array, buffers, buffer_sizes);
-    } catch (std::exception e){
-      std::cout << e.what() << std::endl;
-      return 1;
-    }
+  const void* buffers[] = { nonce, buffer_coords };
+  size_t buffer_sizes[] = { nelems*sizeof(char), 2*nelems*sizeof(float) };
+  std::cout << "Write Array Buffer " << std::endl;
+  try{
+    tiledb_array_write(tiledb_array, buffers, buffer_sizes);
+  } catch (std::exception e){
+    std::cout << e.what() << std::endl;
+    return 1;
+  }
 
 
   tiledb_array_free_schema(&array_schema);
-    /* } */
-    tiledb_array_finalize(tiledb_array);
-    free(nonce);
-    free(met);
-    free(ra);
-    free(decl);
-    free(buffer_coords);
+  tiledb_array_finalize(tiledb_array);
+  free(nonce);
+  /* free(met); */
+  free(ra);
+  free(decl);
+  free(buffer_coords);
 
 
-    fits_close_file(fptr, &status);
+  fits_close_file(fptr, &status);
 
   /* Finalize context. */
   tiledb_ctx_finalize(tiledb_ctx);
