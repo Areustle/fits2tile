@@ -22,10 +22,15 @@ int main() {
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
   char* buffer_a1 = new char[150561];
-  float* buffer_coords = new float[2*150561];
-  void* buffers[] = { buffer_a1, buffer_coords };
-  size_t buffer_sizes[] = { sizeof(buffer_a1), sizeof(buffer_coords) };
+  /* float* buffer_coords = new float[2*150561]; */
+  void* buffers[] = { buffer_a1 };
+  size_t buffer_sizes[] = {
+    150561
+    /* 16*150561 */
+  };
 
+  /* char buffer_var_a2[30]; */
+  /* std::cout << sizeof(buffer_var_a2) << std::endl; */
   std::cout << "Read From Array" << std::endl;
   // Read from array
   tiledb_array_read(tiledb_array, buffers, buffer_sizes);
@@ -36,16 +41,15 @@ int main() {
   printf("coords\t a1\n");
   printf("--------------------------------------------------\n");
   for(int i=0; i<result_num; ++i) {
-    std::cout <<  buffer_coords[2*i]
-     << ", " << buffer_coords[2*i+1]
-     /* << ", " << buffer_coords[2*i+2] */
-     << "\t\t" << buffer_a1[i] << std::endl;
-    /* printf("(%f, %f, %f)", buffer_coords[3*i], buffer_coords[3*i+1], buffer_coords[3*i+2]); */
-    /* printf("\t %c\n", buffer_a1[i]); */
+    std::cout
+      /* <<  buffer_coords[2*i] */
+      /* << ", " << buffer_coords[(2*i)+1] */
+      /* << ", " << buffer_coords[2*i+2] */
+      << "\t\t" << buffer_a1[i] << std::endl;
   }
 
   delete[] buffer_a1;
-  delete[] buffer_coords;
+  /* delete[] buffer_coords; */
   // Finalize the array
   tiledb_array_finalize(tiledb_array);
 
