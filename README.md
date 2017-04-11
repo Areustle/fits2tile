@@ -13,13 +13,15 @@ Requirements:
 
 Usage + Installation:
 ---------------------
+1. Download week 460 Fermi Fits weekly file from: ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w460_p302_v001.fits
+1. Update the "CPPFLAGS" variable in `Makefile` to point to local tiledb and cfitsio libraries and includes.
 
-1. Download a Fermi Fits weekly file from: ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/
-1. Edit the 'filename' variable in test.cc to reference the fitsfile.
-1. Alter the ArraySchema as best you wish.
-1. Run the tileDB workspace creation example file to create a workspace and group.
-1. Update the "CPPFLAGS" variable in Makefile to point to local libs and includes.
-
+```
     make
-
-    ./test
+    rm -rf my_workspace
+    ./array_workspace
+    ./array_create
+    ./array_write
+    ./array_read
+    ./array_query
+```
