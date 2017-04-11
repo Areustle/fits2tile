@@ -46,7 +46,7 @@ int main() {
   float *buffer_coords, *decl, *ra;
   char *nonce;
   int status = 0, anynull = 0;
-  char filename[] = "L170410143649D9656A7F40_PH00.fits";
+  char filename[] = "lat_photon_weekly_w460_p302_v001.fits";
   //OPEN TABLE
   fits_open_table( &fptr, filename, READONLY, &status);
   if (status) {

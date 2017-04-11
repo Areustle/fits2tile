@@ -1,3 +1,4 @@
+#include "fitsio.h"
 #include "tiledb.h"
 #include <stdlib.h>
 #include <iostream>
@@ -22,7 +23,22 @@ int main() {
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
 
-  size_t nrows = 8645;
+  fitsfile *fptr;
+  long nelems;
+  char filename[] = "lat_photon_weekly_w460_p302_v001.fits";
+  int status = 0;
+  fits_open_table( &fptr, filename, READONLY, &status);
+  if (status) {
+      fits_report_error(stdout, status);
+      return 7;
+  }
+
+  fits_get_num_rows(fptr, &nelems, &status);
+  if(status){
+    fits_report_error(stderr, status);
+    return 13;
+  }
+  size_t nrows = static_cast<size_t>(nelems);
   char* buffer_a1 = new char[nrows];
   float* buffer_coords = new float[2*nrows];
   void* buffers[] = { buffer_a1 , buffer_coords };
