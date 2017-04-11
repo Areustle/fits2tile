@@ -1,3 +1,4 @@
+#include "fitsio.h"
 #include "tiledb.h"
 #include <stdlib.h>
 #include <iostream>
@@ -19,10 +20,20 @@ int main() {
       NULL,                                             // All attributes
       0);                                               // Number of attributes
 
+  fitsfile *fptr;
+  int status = 0;
+  long nelems;
+  char filename[] = "L170410143649D9656A7F40_PH00.fits";
+  fits_open_table( &fptr, filename, READONLY, &status);
+  fits_get_num_rows(fptr, &nelems, &status);
+  if(status){
+    fits_report_error(stderr, status);
+    return -1;
+  }
+  size_t nrows = static_cast<size_t>(nelems);
+
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
-
-  size_t nrows = 8645;
   char* buffer_a1 = new char[nrows];
   float* buffer_coords = new float[2*nrows];
   void* buffers[] = { buffer_a1 , buffer_coords };

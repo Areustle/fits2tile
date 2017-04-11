@@ -5,7 +5,6 @@
 #include <vector>
 #include "fitsio.h"
 #include "tiledb.h"
-#include "fits2tile.h"
 
 int main(){
 
@@ -21,7 +20,7 @@ int main(){
   float domain[] = { 0.0, 360.0, -90.0, 90.0 };
   const int cell_val_num[] = {1};
   const int compression[] = { TILEDB_NO_COMPRESSION, TILEDB_NO_COMPRESSION };
-  float tile_extents[] = { 360.0, 180.0 };
+  float tile_extents[] = { 90.0, 45.0 };
   const int types[] = { TILEDB_CHAR, TILEDB_FLOAT32 };
 
   TileDB_ArraySchema array_schema;

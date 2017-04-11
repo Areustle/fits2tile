@@ -22,7 +22,6 @@
 #include <vector>
 #include "fitsio.h"
 #include "tiledb.h"
-#include "fits2tile.h"
 
 int main() {
 
@@ -35,7 +34,6 @@ int main() {
       tiledb_ctx,                                // Context
       &tiledb_array,                             // Array object
       "my_workspace/sparse_arrays/my_array_B",   // Array name
-      /* TILEDB_ARRAY_WRITE,                        // Mode */
       TILEDB_ARRAY_WRITE_UNSORTED,                        // Mode
       NULL,                                      // Entire domain
       NULL,                                      // All attributes
@@ -59,14 +57,12 @@ int main() {
     fits_report_error(stderr, status);
     return 13;
   }
-  /* nelems = 8645; */
 
   nonce= (char *) malloc(nelems * sizeof(char));
   ra   = (float *) malloc(nelems * sizeof(float));
   decl = (float *) malloc(nelems * sizeof(float));
   buffer_coords = (float *) malloc(2 * nelems * sizeof(float));
 
-  //@TODO Read last bufmod elements.
   std::cout << nelems << std::endl;
   std::cout << "RA " << std::endl;
   fits_read_col_flt(fptr, 2,              //RA
