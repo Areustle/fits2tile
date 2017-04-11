@@ -1,9 +1,5 @@
-fits2tile
-
-a small utility for writing FITS data into TileDB.
-
-Perhaps in the future I will generalize it, but for now
-fits2tile is *very* user unfriendly.
+FAILURE EXAMPLE.
+  REQUIRES CFITSIO
 
 Requirements: 
 -------------
@@ -14,12 +10,9 @@ Requirements:
 Usage + Installation:
 ---------------------
 
-1. Download a Fermi Fits weekly file from: ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/
-1. Edit the 'filename' variable in test.cc to reference the fitsfile.
-1. Alter the ArraySchema as best you wish.
-1. Run the tileDB workspace creation example file to create a workspace and group.
 1. Update the "CPPFLAGS" variable in Makefile to point to local libs and includes.
+1. fail_assert.sh will cause the failure
 
-    make
+    `make
 
-    ./test
+     sh fail_assert.sh`
