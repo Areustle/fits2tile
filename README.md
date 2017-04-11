@@ -1,4 +1,5 @@
 FAILURE EXAMPLE.
+
   REQUIRES CFITSIO
 
 Requirements: 
@@ -13,6 +14,6 @@ Usage + Installation:
 1. Update the "CPPFLAGS" variable in Makefile to point to local libs and includes.
 1. fail_assert.sh will cause the failure
 
-    `make
+    make
 
-     sh fail_assert.sh`
+    sh fail_assert.sh
