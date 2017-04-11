@@ -33,10 +33,9 @@ int main(){
 
   // Prepare parameters for array schema
   const char* array_name = "my_workspace/sparse_arrays/my_array_B";
-  const char* attributes[] = { "energy" };
+  const char* attributes[] = { "a1" };
   const char* dimensions[] = {"ra", "dec"};
   float domain[] = {
-    /* 0.0, std::numeric_limits<double>::max(), */
     0.0, 360.0,
     -90.0, 90.0
   };
@@ -48,7 +47,6 @@ int main(){
   };
   float tile_extents[] =
   {
-      /* 5400.0,   //90 Minutes in seconds */
       8.0,      //8 degrees of arc
       4.0       //4 degrees of arc
   };
@@ -80,9 +78,16 @@ int main(){
       types             // Types
   );
 
+  // Create array
+  tiledb_array_create(tiledb_ctx, &array_schema);
+
+  tiledb_array_free_schema(&array_schema);
+  /* Finalize context. */
+  tiledb_ctx_finalize(tiledb_ctx);
+
   fitsfile *fptr;
   int status = 0, anynull = 0;
-  char filename[] = "L170410105950F748C67F80_PH00.fits";
+  char filename[] = "L170410143649D9656A7F40_PH00.fits";
   //OPEN TABLE
   fits_open_table( &fptr, filename, READONLY, &status);
   if (status) {
@@ -95,13 +100,10 @@ int main(){
   /* Fits2tile ff(fptr, dims, attr); */
   /* array_schema = ff.fill_schema(array_schema); */
 
-  // Create array
-  tiledb_array_create(tiledb_ctx, &array_schema);
-
   // === Read Fits Columns ===
   // GET NUMBER OF ROWS
   /* long nelems = ff.get_row_count(); */
-  long nelems = 150561;
+  long nelems = 8645;
 
   TileDB_Array* tiledb_array;
   tiledb_array_init(
@@ -170,7 +172,6 @@ int main(){
   }
 
 
-  tiledb_array_free_schema(&array_schema);
   tiledb_array_finalize(tiledb_array);
   free(nonce);
   /* free(met); */
@@ -181,8 +182,6 @@ int main(){
 
   fits_close_file(fptr, &status);
 
-  /* Finalize context. */
-  tiledb_ctx_finalize(tiledb_ctx);
 
     return 0;
 }
