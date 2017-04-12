@@ -30,7 +30,7 @@ int main(){
       array_name,       // Array name
       attributes,       // Attributes
       1,                // Number of attributes
-      4,                // Capacity
+      4096,                // Capacity
       TILEDB_ROW_MAJOR, // Cell order
       cell_val_num,     // Number of cell values per attribute
       compression,      // Compression

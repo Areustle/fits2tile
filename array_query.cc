@@ -8,9 +8,9 @@ int main() {
 
   // Subarray and attributes
   float subarray[] = {
-    180,360    //RA lower,upper bound
+    180,190    //RA lower,upper bound
     ,
-    0,45   //Dec lower,upper bound
+    0,5   //Dec lower,upper bound
   };
   const char* attributes[] = { "a1" };
 
@@ -40,9 +40,9 @@ int main() {
     tiledb_array_read(tiledb_array, buffers, buffer_sizes);
 
     // Print cell values
-    int64_t result_num = buffer_sizes[0] / sizeof(int);
+    int64_t result_num = buffer_sizes[0] / sizeof(char);
     for(int i=0; i<result_num; ++i) {
-      if(buffer_a1[i] != TILEDB_EMPTY_INT32) // Check for deletion
+      if(buffer_a1[i] != TILEDB_EMPTY_CHAR) // Check for deletion
         printf("%c\t", buffer_a1[i]);
     }
   } while(tiledb_array_overflow(tiledb_array, 0) == 1);
