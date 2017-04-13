@@ -53,7 +53,7 @@ int main() {
   for(int i=0; i<nrows; ++i) {
     std::cout
       <<  buffer_coords[2*i]
-      << ", " << buffer_coords[(2*i)+1]
+      << "," << buffer_coords[(2*i)+1]
       << "\t\t" << buffer_a1[i] << std::endl;
   }
   delete[] buffer_a1;
