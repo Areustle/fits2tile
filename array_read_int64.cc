@@ -34,8 +34,8 @@ int main() {
 
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
-  char* buffer_a1 = new char[nrows];
-  int* buffer_coords = new int[2*nrows];
+  char* buffer_a1 = (char*) malloc(sizeof(char)*nrows);
+  int* buffer_coords = (int*) malloc(2*sizeof(int)*nrows);
   void* buffers[] = { buffer_a1 , buffer_coords };
   size_t buffer_sizes[] = { nrows, 2*nrows*sizeof(int) };
 
@@ -51,8 +51,8 @@ int main() {
       << ", " << buffer_coords[(2*i)+1]
       << "\t\t" << buffer_a1[i] << std::endl;
   }
-  delete[] buffer_a1;
-  delete[] buffer_coords;
+  free(buffer_a1);
+  free(buffer_coords);
   tiledb_array_finalize(tiledb_array);
   tiledb_ctx_finalize(tiledb_ctx);
 
