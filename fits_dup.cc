@@ -19,12 +19,12 @@
 #include <string>
 #include <vector>
 #include "fitsio.h"
+#include <cstring>
 
 int main() {
 
   typedef std::pair<float,float> coord;
   std::string fname = "L170410143649D9656A7F40_PH00.fits";
-  std::vector<coord> coords;
 
   fitsfile *fptr;
   long nelems;
@@ -45,22 +45,33 @@ int main() {
   fits_read_col_flt(fptr, 3, 1, 1, nelems, 7.0, decl, &anynull, &status);
   fits_close_file(fptr, &status);
 
-  for (int i=0; i<nelems; ++i)
-    coords.push_back(std::make_pair(ra[i],decl[i]));
-
-  free(ra);
-  free(decl);
-
   bool dups_found = false;
-  std::sort(coords.begin(), coords.end());
-  for (int i=0; i<coords.size() -1 ; ++i){
-    if (coords[i].first == coords[i+1].first
-        &&
-        coords[i].second == coords[i+1].second){
-      dups_found = true;
-      std::cout << coords[i].first<< ","<< coords[i].second << std::endl;
+  for (int i=0; i<nelems-1; ++i){
+    for (int j=i+1; j<nelems; ++j){
+      if ((ra[i] == ra[j]) && (decl[i] == decl[j])){
+        dups_found = true;
+        std::cout << "Check with == found \n"
+          << "("<< i     << "," << j       << ") \n"
+          << "("<< ra[i] << "," << decl[i] << ") \n"
+          << "("<< decl[j] << "," << decl[j] << ") \n"
+          << std::endl;
+      }
+      if ((std::memcmp(&ra[i], &ra[j], sizeof(float)) == 0) &&
+          (std::memcmp(&decl[i], &decl[j], sizeof(float)) == 0)){
+        dups_found = true;
+        std::cout << "Check with memcmp found \n"
+          << "("<< i     << "," << j       << ") \n"
+          << "("<< ra[i] << "," << decl[i] << ") \n"
+          << "("<< decl[j] << "," << decl[j] << ") \n"
+          << std::endl;
+      }
     }
   }
-  if (dups_found) std::cout << "Duplicates Found!" << std::endl;
+  free(ra);
+  free(decl);
+  if (dups_found) {
+    std::cout << "Duplicates Found!" << std::endl;
+    return 1;
+  }
   return 0;
 }
