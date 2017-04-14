@@ -18,15 +18,15 @@ int main(){
   const char* attributes[] = { "a1" };
   const char* dimensions[] = {"ra", "dec"};
   int domain[] = {
-    int(0.0)  ,int(360000000.0),
-    int(-90000000.0),int(90000000.0)
+    0  ,360000000,
+    -90000000,90000000
   };
   const int cell_val_num[] = {1};
   const int compression[] = {
     TILEDB_NO_COMPRESSION,
     TILEDB_NO_COMPRESSION
   };
-  /* int tile_extents[] = { int(90000000.0), int(45000000.0) }; */
+  /* int tile_extents[] = { 90000000, 45000000 }; */
   int tile_extents[] = { 90, 45 };
   const int types[] = {
     TILEDB_CHAR,
