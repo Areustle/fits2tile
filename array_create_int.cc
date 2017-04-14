@@ -17,9 +17,9 @@ int main(){
   const char* array_name = "my_workspace/sparse_arrays/my_array_B";
   const char* attributes[] = { "a1" };
   const char* dimensions[] = {"ra", "dec"};
-  int domain[] = {
-    0  ,360000000,
-    -90000000,90000000
+  int64_t domain[] = {
+    0,360000000,
+    0,180000000
   };
   const int cell_val_num[] = {1};
   const int compression[] = {
@@ -27,10 +27,10 @@ int main(){
     TILEDB_NO_COMPRESSION
   };
   /* int tile_extents[] = { 90000000, 45000000 }; */
-  int tile_extents[] = { 90, 45 };
+  int64_t tile_extents[] = { 90, 45 };
   const int types[] = {
     TILEDB_CHAR,
-    TILEDB_INT32
+    TILEDB_INT64
   };
 
   TileDB_ArraySchema array_schema;
@@ -47,9 +47,9 @@ int main(){
       dimensions,       // Dimensions
       2,                // Number of dimensions
       domain,           // Domain
-      4*sizeof(int),  // Domain array length in bytes
+      4*sizeof(int64_t),  // Domain array length in bytes
       tile_extents,     // Tile extents
-      2*sizeof(int),  // Tile extents length in bytes
+      2*sizeof(int64_t),  // Tile extents length in bytes
       TILEDB_ROW_MAJOR, // Tile order
       types             // Types
   );

@@ -41,7 +41,6 @@ int main() {
 
   fitsfile *fptr;
   long nelems;
-  char *nonce;
   int status = 0, anynull = 0;
   char filename[] = "L170410143649D9656A7F40_PH00.fits";
   //OPEN TABLE
@@ -57,66 +56,52 @@ int main() {
     return 13;
   }
 
-  nonce= (char *) malloc(nelems * sizeof(char));
+  char* nonce= (char *) malloc(nelems * sizeof(char));
   float* fra   = (float *) malloc(nelems * sizeof(float));
   float* fdecl = (float *) malloc(nelems * sizeof(float));
-  /* int* ira   = (int *) malloc(nelems * sizeof(int)); */
-  /* int* idecl = (int *) malloc(nelems * sizeof(int)); */
-  int* buffer_coords = (int *) malloc(2 * nelems * sizeof(int));
+  int64_t* buffer_coords = (int64_t *) malloc(2 * nelems * sizeof(int64_t));
 
-  /* std::cout << sizeof(int) << std::endl; */
-  /* std::cout << sizeof(float) << std::endl; */
   std::cout << nelems << std::endl;
   std::cout << "RA " << std::endl;
-  fits_read_col_flt(fptr, 2,              //RA
-          1, 1, nelems, 7.0,
-          fra, &anynull, &status);
+  fits_read_col_flt(fptr, 2, 1, 1, nelems, 7.0, fra, &anynull, &status);
 
   std::cout << "DEC " << std::endl;
-  fits_read_col_flt(fptr, 3,              //DEC
-          1, 1, nelems, 7.0,
-          fdecl, &anynull, &status);
-
-  std::cout << "reinterpreting floats as ints" << std::endl;
-  /* std::memcpy(ira, fra, nelems*sizeof(int)); */
-  /* std::memcpy(idecl, fdecl, nelems*sizeof(int)); */
+  fits_read_col_flt(fptr, 3, 1, 1, nelems, 7.0, fdecl, &anynull, &status);
 
   std::cout << "Buffer Merge" << std::endl;
   for(int j=0; j<nelems; ++j){
       nonce[j] = 'a';
-      buffer_coords[(j*2)+0] = int(1000000*fra[j]);
-      buffer_coords[(j*2)+1] = int(1000000*fdecl[j]);
-      /* std::cout << fra[j]<<","<<fdecl[j]<<std::endl; */
+      buffer_coords[(j*2)+0] = int64_t(1000000*fra[j]);
+      buffer_coords[(j*2)+1] = int64_t(1000000*fdecl[j])+90000000;
   }
 
-  bool dups_found = false;
-  for (int i=0; i<nelems-1; ++i){
-    for (int j=i+1; j<nelems; ++j){
-      if ((buffer_coords[2*i] == buffer_coords[2*j])
-          &&
-          (buffer_coords[(2*i)+1] == fdecl[(2*j)+1])){
-        dups_found = true;
-        std::cout << "Check with == found \n"
-          << "("<< i     << "," << j       << ") \n"
-          /* << "("<< fra[i] << "," << fdecl[i] << ") \n" */
-          /* << "("<< fdecl[j] << "," << fdecl[j] << ") \n" */
-          << std::endl;
-      }
-      if ((std::memcmp(&fra[i], &fra[j], sizeof(float)) == 0) &&
-          (std::memcmp(&fdecl[i], &fdecl[j], sizeof(float)) == 0)){
-        dups_found = true;
-        std::cout << "Check with memcmp found \n"
-          << "("<< i     << "," << j       << ") \n"
-          /* << "("<< fra[i] << "," << fdecl[i] << ") \n" */
-          /* << "("<< fdecl[j] << "," << fdecl[j] << ") \n" */
-          << std::endl;
-      }
-    }
-  }
-
+  /* bool dups_found = false; */
+  /* for (int i=0; i<nelems-1; ++i){ */
+  /*   for (int j=i+1; j<nelems; ++j){ */
+  /*     if ((buffer_coords[2*i] == buffer_coords[2*j]) */
+  /*         && */
+  /*         (buffer_coords[(2*i)+1] == fdecl[(2*j)+1])){ */
+  /*       dups_found = true; */
+  /*       std::cout << "Check with == found \n" */
+  /*         << "("<< i     << "," << j       << ") \n" */
+  /*         << "("<< fra[i] << "," << fdecl[i] << ") \n" */
+  /*         << "("<< fdecl[j] << "," << fdecl[j] << ") \n" */
+  /*         << std::endl; */
+  /*     } */
+  /*     if ((std::memcmp(&fra[i], &fra[j], sizeof(float)) == 0) && */
+  /*         (std::memcmp(&fdecl[i], &fdecl[j], sizeof(float)) == 0)){ */
+  /*       dups_found = true; */
+  /*       std::cout << "Check with memcmp found \n" */
+  /*         << "("<< i     << "," << j       << ") \n" */
+  /*         << "("<< fra[i] << "," << fdecl[i] << ") \n" */
+  /*         << "("<< fdecl[j] << "," << fdecl[j] << ") \n" */
+  /*         << std::endl; */
+  /*     } */
+  /*   } */
+  /* } */
 
   const void* buffers[] = { nonce, buffer_coords };
-  size_t buffer_sizes[] = { nelems*sizeof(char), 2*nelems*sizeof(int) };
+  size_t buffer_sizes[] = { nelems*sizeof(char), 2*nelems*sizeof(int64_t) };
   std::cout << "Write Array Buffer " << std::endl;
   try{
     tiledb_array_write(tiledb_array, buffers, buffer_sizes);

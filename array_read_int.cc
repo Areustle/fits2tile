@@ -35,9 +35,9 @@ int main() {
   // Prepare cell buffers
   std::cout << "Prepare buffers" << std::endl;
   char* buffer_a1 = (char*) malloc(sizeof(char)*nrows);
-  int* buffer_coords = (int*) malloc(2*sizeof(int)*nrows);
+  int64_t* buffer_coords = (int64_t*) malloc(2*sizeof(int64_t)*nrows);
   void* buffers[] = { buffer_a1 , buffer_coords };
-  size_t buffer_sizes[] = { nrows, 2*nrows*sizeof(int) };
+  size_t buffer_sizes[] = { nrows, 2*nrows*sizeof(int64_t) };
 
   std::cout << "Read From Array" << std::endl;
   tiledb_array_read(tiledb_array, buffers, buffer_sizes);
