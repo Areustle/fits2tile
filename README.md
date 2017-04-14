@@ -14,13 +14,21 @@ Requirements:
 Usage + Installation:
 ---------------------
 1. Download these Fermi Fits weekly files from: 
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w455_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w456_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w457_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w458_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w459_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w460_p302_v001.fits
+
     ftp://heasarc.nasa.gov/fermi/data/lat/weekly/photon/lat_photon_weekly_w461_p302_v001.fits
+
 1. Update the "CPPFLAGS" variable in `Makefile` to point to local tiledb and cfitsio libraries and includes.
 1. Update your `$LD_LIBRARY_PATH` variable on linux, or `$DYLD_LIBRARY_PATH` variable on OS X to include the path to the cfitsio and tiledb library objects. Example: `export LD_LIBRARY_PATH=$HOME/usr/lib:$LD_LIBRARY_PATH`
 
