@@ -18,6 +18,7 @@
 #include <limits>
 #include <stdlib.h>
 #include <iostream>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include "fitsio.h"
@@ -78,7 +79,10 @@ int main() {
   for(int j=0; j<nelems; ++j){
       nonce[j] = 'a';
       buffer_coords[(j*2)+0] = ra[j];
-      buffer_coords[(j*2)+1] = decl[j];
+      float tmp = decl[j] + 90.0;
+      if((tmp < 0.0) || (ra[j] < 0.0))
+        std::printf("Negative!\t%f,%f", ra[j], tmp);
+      buffer_coords[(j*2)+1] = tmp;
   }
 
   /* for(int i=0; i<32; ++i){ */

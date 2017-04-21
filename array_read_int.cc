@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cstdio>
+#include <cstring>
 
 int main() {
   // Initialize context with the default configuration parameters
@@ -38,6 +39,9 @@ int main() {
   int64_t* buffer_coords = (int64_t*) malloc(2*sizeof(int64_t)*nrows);
   void* buffers[] = { buffer_a1 , buffer_coords };
   size_t buffer_sizes[] = { nrows, 2*nrows*sizeof(int64_t) };
+
+  std::memset(buffer_a1, 'z', sizeof(char)*nrows);
+  std::memset(buffer_coords, int64_t(1), 2*sizeof(int64_t)*nrows);
 
   std::cout << "Read From Array" << std::endl;
   tiledb_array_read(tiledb_array, buffers, buffer_sizes);

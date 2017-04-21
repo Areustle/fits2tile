@@ -17,7 +17,7 @@ int main(){
   const char* array_name = "my_workspace/sparse_arrays/my_array_B";
   const char* attributes[] = { "a1" };
   const char* dimensions[] = {"ra", "dec"};
-  float domain[] = { 0.0, 360.0, -90.0, 90.0 };
+  float domain[] = { 0.0, 360.0, 0.0, 180.0 };
   const int cell_val_num[] = {1};
   const int compression[] = { TILEDB_NO_COMPRESSION, TILEDB_NO_COMPRESSION };
   float tile_extents[] = { 90.0, 45.0 };
