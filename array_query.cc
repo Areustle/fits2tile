@@ -12,7 +12,6 @@ int main() {
     ,
     0,5        //Dec lower,upper bound
   };
-  const char* attributes[] = { "met" };
 
   // Initialize array
   TileDB_Array* tiledb_array;
@@ -22,30 +21,80 @@ int main() {
       "my_workspace/sparse_arrays/my_array_B",         // Array name
       TILEDB_ARRAY_READ,                               // Mode
       subarray,                                        // Constrain in subarray
-      attributes,                                      // Subset on attributes
-      1);                                              // Number of attributes
+      NULL,                                      // Subset on attributes
+      0);                                              // Number of attributes
 
   // Prepare cell buffers
-  double buffer_a1[4096];
-  float  buffer_coords[4096];
-  void* buffers[] = { buffer_a1, buffer_coords };
-  size_t buffer_sizes[] = { sizeof(buffer_a1), sizeof(buffer_coords) };
+  size_t nrows = 64;
+  float buffer_energy[nrows];
+  float buffer_gallat[nrows];
+  float buffer_gallong[nrows];
+  float buffer_theta[nrows];
+  float buffer_phi[nrows];
+  float buffer_zenith_angle[nrows];
+  float buffer_earth_az_ang[nrows];
+  double buffer_met[nrows];
+  int buffer_event_id[nrows];
+  int buffer_run_id[nrows];
+  int buffer_event_class[nrows];
+  int buffer_event_type[nrows];
+  double buffer_livetime[nrows];
+  float  buffer_coords[2*nrows];
 
+  void* buffers[] = {
+    buffer_energy,
+    buffer_gallat,
+    buffer_gallong,
+    buffer_theta,
+    buffer_phi,
+    buffer_zenith_angle,
+    buffer_earth_az_ang,
+    buffer_met,
+    buffer_event_id,
+    buffer_run_id,
+    buffer_event_class,
+    buffer_event_type,
+    buffer_livetime,
+    buffer_coords
+  };
+  size_t buffer_sizes[] = {
+    sizeof(buffer_energy),
+    sizeof(buffer_gallat),
+    sizeof(buffer_gallong),
+    sizeof(buffer_theta),
+    sizeof(buffer_phi),
+    sizeof(buffer_zenith_angle),
+    sizeof(buffer_earth_az_ang),
+    sizeof(buffer_met),
+    sizeof(buffer_event_id),
+    sizeof(buffer_run_id),
+    sizeof(buffer_event_class),
+    sizeof(buffer_event_type),
+    sizeof(buffer_livetime),
+    sizeof(buffer_coords)
+  };
 
   // Loop until no overflow
-  printf(" met\n----\n");
-    printf("\nReading cells...\n");
   do {
-    /* printf("\nReading cells...\n"); */
-
-    // Read from array
     tiledb_array_read(tiledb_array, buffers, buffer_sizes);
 
     // Print cell values
-    int64_t result_num = buffer_sizes[0] / sizeof(double);
+    int64_t result_num = buffer_sizes[0] / sizeof(float);
     for(int i=0; i<result_num; ++i) {
-      if(buffer_a1[i] != TILEDB_EMPTY_FLOAT64) // Check for deletion
-        printf("%.1f\n", buffer_a1[i]);
+      printf("%.1f,%.1f\t", buffer_coords[(2*i)+0],buffer_coords[(2*i)+1]);
+      printf("%.1f ", buffer_energy[i]);
+      printf("%.1f ", buffer_gallat[i]);
+      printf("%.1f ", buffer_gallong[i]);
+      printf("%.1f ", buffer_theta[i]);
+      printf("%.1f ", buffer_phi[i]);
+      printf("%.1f ", buffer_zenith_angle[i]);
+      printf("%.1f ", buffer_earth_az_ang[i]);
+      printf("%.1f ", buffer_met[i]);
+      printf("%d ", buffer_event_id[i]);
+      printf("%d ", buffer_run_id[i]);
+      printf("%d ", buffer_event_class[i]);
+      printf("%d ", buffer_event_type[i]);
+      printf("%.1f\n", buffer_livetime[i]);
     }
   } while(tiledb_array_overflow(tiledb_array, 0) == 1);
 
