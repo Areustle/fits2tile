@@ -54,9 +54,8 @@ int main() {
   for( std::string fname : fnames ){
     fitsfile *fptr;
     long nelems;
-    float *buffer_coords, *decl, *ra;
-    char *nonce;
-    int status = 0, anynull = 0;
+    int status = 0, _nul = 0;
+
     //OPEN TABLE
     fits_open_table( &fptr, fname.c_str(), READONLY, &status);
     if (status) {
@@ -69,28 +68,71 @@ int main() {
       fits_report_error(stderr, status);
       return 13;
     }
-    /* nelems = 8645; */
 
-    nonce= (char *) malloc(nelems * sizeof(char));
-    ra   = (float *) malloc(nelems * sizeof(float));
-    decl = (float *) malloc(nelems * sizeof(float));
-    buffer_coords = (float *) malloc(2 * nelems * sizeof(float));
+	  /* char*   nonce         = new char[nelems]; */
+
+	  float*  energy        = new float[nelems];
+	  float*  ra            = new float[nelems];
+	  float*  decl          = new float[nelems];
+	  float*  gallat        = new float[nelems];
+	  float*  gallong       = new float[nelems];
+	  float*  theta         = new float[nelems];
+	  float*  phi           = new float[nelems];
+	  float*  zenith_angle  = new float[nelems];
+	  float*  earth_az_ang  = new float[nelems];
+    double* met           = new double[nelems];
+    int*    event_id      = new int[nelems];
+    int*    run_id        = new int[nelems];
+    /* short*  recon_v       = new short[nelems]; */
+    /* short*  calib_v       = new short[3*nelems]; */
+    int*    event_class   = new int[nelems];
+    int*    event_type    = new int[nelems];
+    /* short*  conv_type     = new short[nelems]; */
+    double* livetime      = new double[nelems];
+	  float*  buffer_coords = new float[2*nelems];
+
+
 
     //@TODO Read last bufmod elements.
     std::cout << "Write "<< fname << ", rows: " << nelems << std::endl;
-    /* std::cout << "RA " << std::endl; */
-    fits_read_col_flt(fptr, 2,              //RA
-            1, 1, nelems, 7.0,
-            ra, &anynull, &status);
 
-    /* std::cout << "DEC " << std::endl; */
+    fits_read_col_flt(fptr, 1,              //Energy
+            1, 1, nelems, 7.0, energy, &_nul, &status);
+    fits_read_col_flt(fptr, 2,              //RA
+            1, 1, nelems, 7.0, ra, &_nul, &status);
     fits_read_col_flt(fptr, 3,              //DEC
-            1, 1, nelems, 7.0,
-            decl, &anynull, &status);
+            1, 1, nelems, 7.0, decl, &_nul, &status);
+    fits_read_col_flt(fptr, 4,
+            1, 1, nelems, 7.0, gallat, &_nul, &status);
+    fits_read_col_flt(fptr, 5,
+            1, 1, nelems, 7.0, gallong, &_nul, &status);
+    fits_read_col_flt(fptr, 6,
+            1, 1, nelems, 7.0, theta, &_nul, &status);
+    fits_read_col_flt(fptr, 7,
+            1, 1, nelems, 7.0, phi, &_nul, &status);
+    fits_read_col_flt(fptr, 8,
+            1, 1, nelems, 7.0, zenith_angle, &_nul, &status);
+    fits_read_col_flt(fptr, 9,
+            1, 1, nelems, 7.0, earth_az_ang, &_nul, &status);
+    fits_read_col_dbl(fptr, 10,
+            1, 1, nelems, 7.0, met, &_nul, &status);
+    fits_read_col_int(fptr, 11,
+            1, 1, nelems, 7, event_id, &_nul, &status);
+    fits_read_col_int(fptr, 12,
+            1, 1, nelems, 7, run_id, &_nul, &status);
+    /* fits_read_col_sht(fptr, 13, */
+    /*         1, 1, nelems, 7, recon_v, &_nul, &status); */
+    fits_read_col_int(fptr, 15,
+            1, 1, nelems, 7, event_class, &_nul, &status);
+    fits_read_col_int(fptr, 16,
+            1, 1, nelems, 7, event_type, &_nul, &status);
+    /* fits_read_col_sht(fptr, 17, */
+    /*         1, 1, nelems, 7, conv_type, &_nul, &status); */
+    fits_read_col_dbl(fptr, 18,
+            1, 1, nelems, 7, livetime, &_nul, &status);
 
     /* std::cout << "Buffer Merge" << std::endl; */
     for(int j=0; j<nelems; ++j){
-        nonce[j] = 'a';
         buffer_coords[(j*2)+0] = ra[j];
         buffer_coords[(j*2)+1] = decl[j];
     }
@@ -103,9 +145,43 @@ int main() {
     /*   std::cout << std::endl; */
     /* } */
 
-    const void* buffers[] = { nonce, buffer_coords };
-    size_t buffer_sizes[] = { nelems*sizeof(char), 2*nelems*sizeof(float) };
-    /* std::cout << "Write Array Buffer " << std::endl; */
+    const void* buffers[] = {
+      energy,
+      gallat,
+      gallong,
+      theta,
+      phi,
+      zenith_angle,
+      earth_az_ang,
+      met,
+      event_id,
+      run_id,
+      /* recon_v, */
+      event_class,
+      event_type,
+      /* conv_type, */
+      livetime,
+      buffer_coords
+    };
+    size_t buffer_sizes[] = {
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(float),
+      nelems*sizeof(double),
+      nelems*sizeof(int),
+      nelems*sizeof(int),
+      /* nelems*sizeof(short), */
+      nelems*sizeof(int),
+      nelems*sizeof(int),
+      /* nelems*sizeof(short), */
+      nelems*sizeof(double),
+      2*nelems*sizeof(float)
+    };
+    std::cout << "Write Array Buffer " << std::endl;
     try{
       tiledb_array_write(tiledb_array, buffers, buffer_sizes);
     } catch (std::exception e){
@@ -114,10 +190,26 @@ int main() {
     }
 
     fits_close_file(fptr, &status);
-    free(nonce);
-    free(ra);
-    free(decl);
-    free(buffer_coords);
+
+    delete[] energy;
+    delete[] ra;
+    delete[] decl;
+    delete[] gallat;
+    delete[] gallong;
+    delete[] theta;
+    delete[] phi;
+    delete[] zenith_angle;
+    delete[] earth_az_ang;
+    delete[] met;
+    delete[] event_id;
+    delete[] run_id;
+    /* delete[] recon_v; */
+    /* delete[] calib_v; */
+    delete[] event_class;
+    delete[] event_type;
+    /* delete[] conv_type; */
+    delete[] livetime;
+    delete[](buffer_coords);
 
   }
   std::cout << "Finalize Array"<<std::endl;
@@ -126,5 +218,6 @@ int main() {
   std::cout << "Consolidate Fragments"<<std::endl;
   tiledb_array_consolidate(tiledb_ctx, "my_workspace/sparse_arrays/my_array_B");
   tiledb_ctx_finalize(tiledb_ctx);
+  std::cout << "Finished"<<std::endl;
   return 0;
 }

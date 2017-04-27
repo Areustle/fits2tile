@@ -10,40 +10,42 @@ int main() {
   float subarray[] = {
     180,190    //RA lower,upper bound
     ,
-    0,5   //Dec lower,upper bound
+    0,5        //Dec lower,upper bound
   };
-  const char* attributes[] = { "a1" };
+  const char* attributes[] = { "met" };
 
   // Initialize array
   TileDB_Array* tiledb_array;
   tiledb_array_init(
-      tiledb_ctx,                                       // Context
-      &tiledb_array,                                    // Array object
-      "my_workspace/sparse_arrays/my_array_B",          // Array name
-      TILEDB_ARRAY_READ,                                // Mode
-      subarray,                                         // Constrain in subarray
-      attributes,                                       // Subset on attributes
-      1);                                               // Number of attributes
+      tiledb_ctx,                                      // Context
+      &tiledb_array,                                   // Array object
+      "my_workspace/sparse_arrays/my_array_B",         // Array name
+      TILEDB_ARRAY_READ,                               // Mode
+      subarray,                                        // Constrain in subarray
+      attributes,                                      // Subset on attributes
+      1);                                              // Number of attributes
 
   // Prepare cell buffers
-  char buffer_a1[8];
-  void* buffers[] = { buffer_a1 };
-  size_t buffer_sizes[] = { sizeof(buffer_a1) };
+  double buffer_a1[4096];
+  float  buffer_coords[4096];
+  void* buffers[] = { buffer_a1, buffer_coords };
+  size_t buffer_sizes[] = { sizeof(buffer_a1), sizeof(buffer_coords) };
 
 
   // Loop until no overflow
-  printf(" a1\n----\n");
-  do {
+  printf(" met\n----\n");
     printf("\nReading cells...\n");
+  do {
+    /* printf("\nReading cells...\n"); */
 
     // Read from array
     tiledb_array_read(tiledb_array, buffers, buffer_sizes);
 
     // Print cell values
-    int64_t result_num = buffer_sizes[0] / sizeof(char);
+    int64_t result_num = buffer_sizes[0] / sizeof(double);
     for(int i=0; i<result_num; ++i) {
-      if(buffer_a1[i] != TILEDB_EMPTY_CHAR) // Check for deletion
-        printf("%c\t", buffer_a1[i]);
+      if(buffer_a1[i] != TILEDB_EMPTY_FLOAT64) // Check for deletion
+        printf("%.1f\n", buffer_a1[i]);
     }
   } while(tiledb_array_overflow(tiledb_array, 0) == 1);
 

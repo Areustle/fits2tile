@@ -6,7 +6,5 @@ all:
 	g++ ${CPPFLAGS} -o array_write array_write.cc
 	g++ ${CPPFLAGS} -o array_read array_read.cc
 	g++ ${CPPFLAGS} -o array_query array_query.cc
-	g++ ${CPPFLAGS} -o test test.cc fits2tile.cc
-	g++ ${CPPFLAGS} -o fread file_read.cc
 
 .PHONY: all

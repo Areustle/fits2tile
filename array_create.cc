@@ -16,20 +16,74 @@ int main(){
 
   // Prepare parameters for array schema
   const char* array_name = "my_workspace/sparse_arrays/my_array_B";
-  const char* attributes[] = { "a1" };
+  const char* attributes[] = {
+    "energy",
+    "gallat",
+    "gallong",
+    "theta",
+    "phi",
+    "zenith_angle",
+    "earth_az_ang",
+    "met",
+    "event_id",
+    "run_id",
+    /* "recon_v", */
+    "event_class",
+    "event_type",
+    /* "conv_type", */
+    "livetime"
+  };
   const char* dimensions[] = {"ra", "dec"};
   float domain[] = { 0.0, 360.0, -90.0, 90.0 };
-  const int cell_val_num[] = {1};
-  const int compression[] = { TILEDB_NO_COMPRESSION, TILEDB_NO_COMPRESSION };
-  float tile_extents[] = { 360.0, 180.0 };
-  const int types[] = { TILEDB_CHAR, TILEDB_FLOAT32 };
+  const int cell_val_num[] = {
+    1,1,1,1,1,
+    1,1,1,1,1,
+    1,1,1
+  };
+  const int compression[] = {
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    /* TILEDB_NO_COMPRESSION, */
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION,
+    /* TILEDB_NO_COMPRESSION, */
+    TILEDB_NO_COMPRESSION,
+    TILEDB_NO_COMPRESSION
+  };
+  float tile_extents[] = {360.0, 180.0};
+  const int types[] = {
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT32,
+    TILEDB_FLOAT64,
+    TILEDB_INT32,
+    TILEDB_INT32,
+    /* TILEDB_INT32, //Should be short. Dangerous! */
+    TILEDB_INT32,
+    TILEDB_INT32,
+    /* TILEDB_INT32, //Should be short. Dangerous! */
+    TILEDB_FLOAT64,
+    TILEDB_FLOAT32
+  };
 
   TileDB_ArraySchema array_schema;
   tiledb_array_set_schema(
       &array_schema,    // Array schema struct
       array_name,       // Array name
       attributes,       // Attributes
-      1,                // Number of attributes
+      13,                // Number of attributes
       4096,                // Capacity
       TILEDB_ROW_MAJOR, // Cell order
       cell_val_num,     // Number of cell values per attribute
