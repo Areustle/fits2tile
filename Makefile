@@ -1,5 +1,5 @@
-CPPFLAGS=-g -std=c++11 -I. -I${HOME}/glu/usr/include -I${HOME}/asr/include -I/usr/include -L${HOME}/asr/lib -L${HOME}/glu/usr/lib -ltiledb -lcfitsio
-# CPPFLAGS=-g -std=c++11 -I. -I${HOME}/asr/include -I/usr/include -L${HOME}/asr/lib -ltiledb -lcfitsio
+# CPPFLAGS=-g -std=c++11 -I. -I${HOME}/glu/usr/include -I${HOME}/asr/include -I/usr/include -L${HOME}/asr/lib -L${HOME}/glu/usr/lib -ltiledb -lcfitsio
+CPPFLAGS=-g -std=c++11 -I. -I${HOME}/asr/include -I/usr/include -L${HOME}/asr/lib -ltiledb -lcfitsio
 all:
 	g++ ${CPPFLAGS} -o array_workspace array_workspace.cc
 	g++ ${CPPFLAGS} -o array_create array_create.cc

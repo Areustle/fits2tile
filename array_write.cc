@@ -43,25 +43,25 @@ int main() {
 
   std::vector<std::string> fnames = {
     /* "L170410143649D9656A7F40_PH00.fits" */
-    "lat_photon_weekly_w448_p302_v001.fits",
-    "lat_photon_weekly_w449_p302_v001.fits",
-    "lat_photon_weekly_w450_p302_v001.fits",
-    "lat_photon_weekly_w451_p302_v001.fits",
-    "lat_photon_weekly_w452_p302_v001.fits",
-    "lat_photon_weekly_w453_p302_v001.fits",
-    "lat_photon_weekly_w454_p302_v001.fits",
+    /* "lat_photon_weekly_w448_p302_v001.fits", */
+    /* "lat_photon_weekly_w449_p302_v001.fits", */
+    /* "lat_photon_weekly_w450_p302_v001.fits", */
+    /* "lat_photon_weekly_w451_p302_v001.fits", */
+    /* "lat_photon_weekly_w452_p302_v001.fits", */
+    /* "lat_photon_weekly_w453_p302_v001.fits", */
+    /* "lat_photon_weekly_w454_p302_v001.fits", */
     "lat_photon_weekly_w455_p302_v001.fits",
     "lat_photon_weekly_w456_p302_v001.fits",
     "lat_photon_weekly_w457_p302_v001.fits",
     "lat_photon_weekly_w458_p302_v001.fits",
     "lat_photon_weekly_w459_p302_v001.fits",
     "lat_photon_weekly_w460_p302_v001.fits",
-    "lat_photon_weekly_w461_p302_v001.fits",
-    "lat_photon_weekly_w462_p302_v001.fits",
-    "lat_photon_weekly_w463_p302_v001.fits",
-    "lat_photon_weekly_w464_p302_v001.fits",
-    "lat_photon_weekly_w465_p302_v001.fits",
-    "lat_photon_weekly_w466_p302_v001.fits"
+    "lat_photon_weekly_w461_p302_v001.fits"
+    /* "lat_photon_weekly_w462_p302_v001.fits", */
+    /* "lat_photon_weekly_w463_p302_v001.fits", */
+    /* "lat_photon_weekly_w464_p302_v001.fits", */
+    /* "lat_photon_weekly_w465_p302_v001.fits", */
+    /* "lat_photon_weekly_w466_p302_v001.fits" */
   };
 
   for( std::string fname : fnames ){
